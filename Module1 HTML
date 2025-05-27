@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local Community Event Portal</title>
+  <style>
+    /* Internal CSS */
+    #welcomeBanner {
+      background-color: #cce5ff;
+      padding: 1em;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    .highlight {
+      font-weight: bold;
+      background-color: yellow;
+    }
+    .event-img {
+      border: 2px solid #333;
+      width: 100px;
+      height: 100px;
+    }
+    form {
+      margin-top: 20px;
+      padding: 1em;
+      border: 1px solid #ccc;
+      max-width: 400px;
+    }
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+    #charCount {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+  <script>
+    // Task 6: Event Handling
+    function validatePhone() {
+      const phone = document.getElementById('phone');
+      if (!/^\d{10}$/.test(phone.value)) {
+        alert('Enter a valid 10-digit phone number');
+        phone.focus();
+      }
+    }
+
+    function showFee(select) {
+      const fee = document.getElementById('fee');
+      fee.value = 'Fee: $' + (select.value === 'workshop' ? '25' : select.value === 'festival' ? '10' : 'Free');
+    }
+
+    function confirmSubmission() {
+      document.getElementById('confirmation').value = 'Thank you for registering!';
+    }
+
+    function enlargeImage(img) {
+      img.style.width = '200px';
+      img.style.height = '200px';
+    }
+
+    function countChars(el) {
+      document.getElementById('charCount').innerText = el.value.length + ' characters';
+    }
+
+    // Task 7: Video ready message
+    function videoReady() {
+      document.getElementById('videoStatus').innerText = 'Video ready to play';
+    }
+
+    // Task 7: Warn before unload
+    window.onbeforeunload = function () {
+      const name = document.getElementById('name').value;
+      return name ? "You have unsaved changes!" : undefined;
+    };
+
+    // Task 8: Local Storage
+    function savePreference() {
+      const type = document.getElementById('eventType').value;
+      localStorage.setItem('preferredType', type);
+    }
+
+    function loadPreference() {
+      const savedType = localStorage.getItem('preferredType');
+      if (savedType) {
+        document.getElementById('eventType').value = savedType;
+      }
+    }
+
+    function clearPreferences() {
+      localStorage.clear();
+      sessionStorage.clear();
+      alert('Preferences cleared');
+    }
+
+    // Task 9: Geolocation
+    function findNearbyEvents() {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const { latitude, longitude } = position.coords;
+          document.getElementById('location').innerText = `Your Location: ${latitude}, ${longitude}`;
+        },
+        error => {
+          alert("Geolocation error: " + error.message);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
+    window.onload = loadPreference;
+  </script>
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <a href="#home">Home</a> |
+    <a href="#events">Events</a> |
+    <a href="#contact">Contact</a> |
+    <a href="help.html" target="_blank">Help</a>
+  </nav>
+
+  <!-- Welcome Banner -->
+  <div id="welcomeBanner">
+    Welcome to the <span class="highlight">Community Portal</span>!
+    <span style="color: red; font-weight: bold;">Special Offer: 50% off events this week!</span>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Home Section -->
+    <section id="home">
+      <h2>Welcome Home</h2>
+      <p>Find events, connect with neighbors, and explore your city.</p>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events">
+      <h2>Upcoming Events</h2>
+
+      <!-- Image Gallery -->
+      <table>
+        <caption>Highlights from Past Events</caption>
+        <tr>
+          <td><img src="event1.jpg" alt="Park Clean Up" title="Park Clean Up" class="event-img" ondblclick="enlargeImage(this)" /></td>
+          <td><img src="event2.jpg" alt="Food Drive" title="Food Drive" class="event-img" ondblclick="enlargeImage(this)" /></td>
+          <td><img src="event3.jpg" alt="Music Festival" title="Music Festival" class="event-img" ondblclick="enlargeImage(this)" /></td>
+        </tr>
+        <tr>
+          <td><img src="event4.jpg" alt="Art Workshop" title="Art Workshop" class="event-img" ondblclick="enlargeImage(this)" /></td>
+          <td><img src="event5.jpg" alt="Marathon" title="Marathon" class="event-img" ondblclick="enlargeImage(this)" /></td>
+          <td><img src="event6.jpg" alt="Town Hall" title="Town Hall" class="event-img" ondblclick="enlargeImage(this)" /></td>
+        </tr>
+      </table>
+
+      <!-- Event Registration Form -->
+      <h3>Register for an Event</h3>
+      <form onsubmit="confirmSubmission(); return false;">
+        <label>Name: <input type="text" id="name" placeholder="Your Name" required autofocus /></label><br><br>
+        <label>Email: <input type="email" placeholder="you@example.com" required /></label><br><br>
+        <label>Date: <input type="date" required /></label><br><br>
+        <label>Phone: <input type="text" id="phone" onblur="validatePhone()" /></label><br><br>
+        <label>Event Type:
+          <select id="eventType" onchange="showFee(this); savePreference();">
+            <option value="festival">Festival</option>
+            <option value="workshop">Workshop</option>
+            <option value="meeting">Town Meeting</option>
+          </select>
+        </label>
+        <output id="fee"></output><br><br>
+        <label>Message: <textarea onkeyup="countChars(this)"></textarea></label><br>
+        <span id="charCount">0 characters</span><br><br>
+        <button type="submit">Submit</button>
+        <output id="confirmation"></output>
+      </form>
+      <br>
+      <button onclick="clearPreferences()">Clear Preferences</button><br><br>
+
+      <!-- Geolocation -->
+      <button onclick="findNearbyEvents()">Find Nearby Events</button>
+      <p id="location"></p>
+    </section>
+
+    <!-- Video Promo -->
+    <video controls oncanplay="videoReady()">
+  <source src="promo.mp4" type="video/mp4">
+  <source src="promo.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
+
+    <!-- Contact Section -->
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Email: support@communityportal.com</p>
+      <p>Phone: (123) 456-7890</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Local Community Portal</p>
+  </footer>
+</body>
+</html>
