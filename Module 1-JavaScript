@@ -1,0 +1,346 @@
+JavaScript
+-------------------------------------------------------------------------------------------------
+index.html
+---------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Local Community Event Portal</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header id="mainHeader">
+    <h1 class="title" style="color: red;">Local Community Event Portal</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#register">Register</a></li>
+      <li><a href="#news">Community News</a></li>
+    </ul>
+  </nav>
+
+  <section id="welcomeBanner">
+    <h2>Welcome to Your Community!</h2>
+    <p>Discover and register for upcoming events.</p>
+  </section>
+
+  <!-- Filters -->
+  <section id="filters">
+    <label for="categoryFilter">Filter by Category:</label>
+    <select id="categoryFilter">
+      <option value="all">All Categories</option>
+    </select>
+
+    <label for="searchInput">Search Events:</label>
+    <input type="text" id="searchInput" placeholder="Search by name and press Enter" />
+  </section>
+
+  <!-- Events Container -->
+  <section id="events" aria-live="polite">
+    <h2>Upcoming Events</h2>
+    <div id="eventsContainer"></div>
+    <div id="loadingSpinner" style="display:none;">Loading events...</div>
+  </section>
+
+  <!-- Registration Form -->
+  <section id="register">
+    <h2>Register for an Event</h2>
+    <form id="registrationForm" novalidate>
+      <label>
+        Name:
+        <input name="name" type="text" required placeholder="Your full name" />
+      </label>
+      <label>
+        Email:
+        <input name="email" type="email" required placeholder="Your email address" />
+      </label>
+      <label>
+        Select Event:
+        <select id="eventSelect" name="eventSelect" required>
+          <option value="">--Select Event--</option>
+        </select>
+      </label>
+      <button type="submit" id="registerBtn">Register</button>
+      <div id="formMessage" role="alert" aria-live="assertive"></div>
+    </form>
+  </section>
+
+  <!-- Community News with multi-column layout -->
+  <section id="news" class="news-article">
+    <h2>Community News</h2>
+    <p>
+      The community park will host the annual music festival this summer. Come and enjoy live performances, food stalls, and family-friendly activities.
+      Stay tuned for volunteer opportunities and upcoming workshops. Our local artists have exciting exhibitions planned.
+      Make sure to check out the new tech meetup group launching next month for networking and learning.
+    </p>
+    <p>
+      Remember to support local businesses during community events and participate in neighborhood cleanups.
+      Your involvement makes our community vibrant and welcoming for all residents.
+    </p>
+  </section>
+
+  <!-- Main JavaScript -->
+  <script src="main.js"></script>
+</body>
+</html>
+
+
+style.css
+----------------------
+/* ======================
+   Global Reset & Body
+====================== */
+/* Reset all margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set default font and background */
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f4f4f4 url('https://www.transparenttextures.com/patterns/cubes.png') repeat;
+  color: #333;
+  padding: 25px;
+}
+
+/* ======================
+   Header Styles
+====================== */
+#mainHeader {
+  background: linear-gradient(to right, #007BFF, #00BFFF);
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+/* ======================
+   Navigation Menu
+====================== */
+nav ul {
+  list-style-type: none;
+  background-color: #004080;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-radius: 6px;
+}
+
+nav li {
+  padding: 14px 20px;
+  margin: 5px;
+}
+
+nav a:link,
+nav a:visited {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  background-color: #0055aa;
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav li {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ======================
+   Welcome Banner
+====================== */
+#welcomeBanner {
+  background-color: #cceeff;
+  padding: 15px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.highlight {
+  background-color: yellow;
+  font-weight: bold;
+}
+
+/* ======================
+   Event Cards
+====================== */
+.eventCard {
+  border: 2px solid #ddd;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 10px;
+  background-color: #fff;
+  transition: outline 0.3s ease;
+}
+
+.eventCard:hover {
+  outline: 2px solid #007BFF;
+}
+
+/* ======================
+   Table Styling (not used here but prepared)
+====================== */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  background-color: #fff;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ======================
+   Typography Section
+====================== */
+h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  background: linear-gradient(to right, #007BFF, #00BFFF);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+h3, p {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* Style for main CTA button */
+.cta-button {
+  background-color: #007BFF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ======================
+   Forms & Fields
+====================== */
+form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid #007BFF;
+}
+
+/* Visibility test */
+.hidden {
+  visibility: hidden;
+}
+
+.invisible {
+  display: none;
+}
+
+/* ======================
+   Multi-Column Layout
+====================== */
+.news-article {
+  column-count: 2;
+  column-gap: 30px;
+  column-rule: 1px solid gray;
+  padding: 20px;
+  background-color: #fafafa;
+  margin: 20px 0;
+}
+
+/* ======================
+   Responsive Image Styling
+====================== */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  img {
+    width: 90%;
+  }
+}
+
+
+script.js
+-----------------------------------------
+// 1. JavaScript Basics & Setup
+console.log("Welcome to the Community Portal");
+
+window.onload = () => {
+  alert("Page is fully loaded!");
+  init(); // Initialize portal logic
+};
+
+// Sample events array to simulate data
+let events = [
+  { id: 1, name: "Music Festival", date: "2025-06-10", seats: 100, category: "Music", location: "Park" },
+  { id: 2, name: "Art Workshop", date: "2025-04-01", seats: 0, category: "Art", location: "Community Center" }, // full seats
+  { id: 3, name: "Tech Meetup", date: "2025-08-15", seats: 25, category: "Tech", location: "Library" },
+];
+
+// Track total registrations per category (closure)
+const registrationTracker = (() => {
+  const counts = {};
+  return {
+    increment: (category) => counts[category] = (counts[category] || 0) + 1,
+    getCount: (category) => counts[category] || 0,
+  };
+})();
+
+// 4. Functions and Closures
+function addEvent(event) {
+  events.push(event);
+}
+
+function registerUser(eventId) {
+  try {
+    const event = events.find(e => e.id === eventId);
+    if (!event) throw new Error("Event not found");
+    if (new Date(event.date) < new Date()) throw new Error("Cannot register for past event");
+    if (event.seats <= 0) throw
